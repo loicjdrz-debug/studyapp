@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="StudyApp">
+    <title>StudyApp - Apprentissage IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --secondary: #34d399;
+            --accent: #fbbf24;
+            --danger: #f87171;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            padding-bottom: 80px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px 20px 16px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 calc(env(safe-area-inset-bottom) + 8px) 0;
+            z-index: 100;
+            box-shadow: 0 -4px 12px var(--shadow);
+        }
+
+        .nav-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 8px;
+            color: var(--text-light);
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            transition: transform 0.3s;
+        }
+
+        .nav-btn.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 100%;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 4px var(--shadow);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .card-icon {
+            font-size: 24px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .info-icon {
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            background: var(--card);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: flex-end;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border-radius: 24px 24px 0 0;
+            padding: 28px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-right: 32px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg);
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-light);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .list-item {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .list-item:active {
+            transform: scale(0.98);
+        }
+
+        .list-item-content {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .list-item-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .list-item-subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: var(--bg);
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .icon-btn:active {
+            background: var(--border);
+        }
+
+        .welcome-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .welcome-logo {
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 48px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .welcome-form {
+            background: white;
+            color: var(--text);
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-display {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 15px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 32px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            color: var(--text);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px var(--shadow);
+            z-index: 9999;
+            display: none;
+            border: 2px solid var(--border);
+            max-width: 90%;
+        }
+
+        .toast.active {
+            display: block;
+            animation: toastIn 0.3s;
+        }
+
+        @keyframes toastIn {
+            from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .toast-success {
+            border-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .toast-error {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+
+    <!-- Welcome Screen -->
+    <div class="welcome-screen hidden" id="welcomeScreen">
+        <div class="welcome-logo">📚</div>
+        <h1 class="welcome-title">StudyApp</h1>
+        <p class="welcome-subtitle">Votre assistant d'apprentissage intelligent<br>propulsé par l'IA</p>
+        
+        <div class="welcome-form">
+            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Bienvenue ! 👋</h2>
+            
+            <div class="form-group">
+                <label class="form-label">📧 Votre prénom</label>
+                <input type="text" class="form-input" id="setupName" placeholder="Ex: Sophie">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    🔑 Clé API Gemini
+                    <span class="info-icon" onclick="showApiHelp()">ℹ️</span>
+                </label>
+                <input type="text" class="form-input" id="setupApiKey" placeholder="Votre clé API Google Gemini">
+                <p style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
+                    Cliquez sur ℹ️ pour savoir comment l'obtenir gratuitement
+                </p>
+            </div>
+            
+            <button class="btn" onclick="completeSetup()">Commencer 🚀</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn hidden" id="backBtn" onclick="goBack()">← Retour</button>
+                <div style="flex: 1;"></div>
+            </div>
+            <h1 id="headerTitle">StudyApp</h1>
+            <div class="header-subtitle" id="headerSubtitle">Bonjour ! 😊</div>
+        </div>
+
+        <div class="container" id="mainContainer"></div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showView('courses')" data-view="courses">
+                <span class="nav-icon">📚</span>
+                <span>Cours</span>
+            </button>
+            <button class="nav-btn" onclick="showView('languages')" data-view="languages">
+                <span class="nav-icon">🌍</span>
+                <span>Langues</span>
+            </button>
+            <button class="nav-btn" onclick="showView('settings')" data-view="settings">
+                <span class="nav-icon">⚙️</span>
+                <span>Réglages</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data Manager - gère toutes les données locales
+        class DataManager {
+            constructor() {
+                this.data = this.loadData();
+            }
+
+            loadData() {
+                const stored = localStorage.getItem('studyAppData');
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+                return {
+                    user: { name: '', apiKey: '', theme: 'light' },
+                    years: [],
+                    languages: [],
+                    isSetupComplete: false
+                };
+            }
+
+            saveData() {
+                localStorage.setItem('studyAppData', JSON.stringify(this.data));
+            }
+
+            setupUser(name, apiKey) {
+                this.data.user.name = name;
+                this.data.user.apiKey = apiKey;
+                this.data.isSetupComplete = true;
+                this.saveData();
+            }
+
+            getUser() {
+                return this.data.user;
+            }
+
+            updateTheme(theme) {
+                this.data.user.theme = theme;
+                this.saveData();
+            }
+
+            addYear(name) {
+                const year = {
+                    id: Date.now().toString(),
+                    name,
+                    subjects: [],
+                    createdAt: new Date().toISOString()
+                };
+                this.data.years.push(year);
+                this.saveData();
+                return year;
+            }
+
+            getYears() {
+                return this.data.years;
+            }
+
+            getYear(yearId) {
+                return this.data.years.find(y => y.id === yearId);
+            }
+
+            deleteYear(yearId) {
+                this.data.years = this.data.years.filter(y => y.id !== yearId);
+                this.saveData();
+            }
+
+            addSubject(yearId, name) {
+                const year = this.getYear(yearId);
+                if (!year) return null;
+                
+                const subject = {
+                    id: Date.now().toString(),
+                    name,
+                    chapters: [],
+                    createdAt: new Date().toISOString()
+                };
+                year.subjects.push(subject);
+                this.saveData();
+                return subject;
+            }
+
+            getSubject(yearId, subjectId) {
+                const year = this.getYear(yearId);
+                if (!year) return null;
+                return year.subjects.find(s => s.id === subjectId);
+            }
+
+            deleteSubject(yearId, subjectId) {
+                const year = this.getYear(yearId);
+                if (!year) return;
+                year.subjects = year.subjects.filter(s => s.id !== subjectId);
+                this.saveData();
+            }
+
+            addChapter(yearId, subjectId, name) {
+                const subject = this.getSubject(yearId, subjectId);
+                if (!subject) return null;
+
+                const chapter = {
+                    id: Date.now().toString(),
+                    name,
+                    course: null,
+                    summary: null,
+                    mindmap: null,
+                    quizzes: [],
+                    createdAt: new Date().toISOString()
+                };
+                subject.chapters.push(chapter);
+                this.saveData();
+                return chapter;
+            }
+
+            getChapter(yearId, subjectId, chapterId) {
+                const subject = this.getSubject(yearId, subjectId);
+                if (!subject) return null;
+                return subject.chapters.find(c => c.id === chapterId);
+            }
+
+            deleteChapter(yearId, subjectId, chapterId) {
+                const subject = this.getSubject(yearId, subjectId);
+                if (!subject) return;
+                subject.chapters = subject.chapters.filter(c => c.id !== chapterId);
+                this.saveData();
+            }
+
+            setCourse(yearId, subjectId, chapterId, content) {
+                const chapter = this.getChapter(yearId, subjectId, chapterId);
+                if (!chapter) return;
+                chapter.course = content;
+                this.saveData();
+            }
+
+            setSummary(yearId, subjectId, chapterId, content) {
+                const chapter = this.getChapter(yearId, subjectId, chapterId);
+                if (!chapter) return;
+                chapter.summary = content;
+                this.saveData();
+            }
+
+            setMindmap(yearId, subjectId, chapterId, content) {
+                const chapter = this.getChapter(yearId, subjectId, chapterId);
+                if (!chapter) return;
+                chapter.mindmap = content;
+                this.saveData();
+            }
+
+            addQuiz(yearId, subjectId, chapterId, quiz) {
+                const chapter = this.getChapter(yearId, subjectId, chapterId);
+                if (!chapter) return;
+                chapter.quizzes.push(quiz);
+                this.saveData();
+            }
+
+            addLanguage(name) {
+                const language = {
+                    id: Date.now().toString(),
+                    name,
+                    chapters: [],
+                    createdAt: new Date().toISOString()
+                };
+                this.data.languages.push(language);
+                this.saveData();
+                return language;
+            }
+
+            getLanguages() {
+                return this.data.languages;
+            }
+
+            getLanguage(langId) {
+                return this.data.languages.find(l => l.id === langId);
+            }
+
+            deleteLanguage(langId) {
+                this.data.languages = this.data.languages.filter(l => l.id !== langId);
+                this.saveData();
+            }
+
+            addLanguageChapter(langId, name) {
+                const language = this.getLanguage(langId);
+                if (!language) return null;
+
+                const chapter = {
+                    id: Date.now().toString(),
+                    name,
+                    vocabulary: [],
+                    createdAt: new Date().toISOString()
+                };
+                language.chapters.push(chapter);
+                this.saveData();
+                return chapter;
+            }
+
+            getLanguageChapter(langId, chapterId) {
+                const language = this.getLanguage(langId);
+                if (!language) return null;
+                return language.chapters.find(c => c.id === chapterId);
+            }
+
+            deleteLanguageChapter(langId, chapterId) {
+                const language = this.getLanguage(langId);
+                if (!language) return;
+                language.chapters = language.chapters.filter(c => c.id !== chapterId);
+                this.saveData();
+            }
+
+            addVocabulary(langId, chapterId, french, translated) {
+                const chapter = this.getLanguageChapter(langId, chapterId);
+                if (!chapter) return null;
+
+                const vocab = {
+                    id: Date.now().toString(),
+                    french,
+                    translated,
+                    correctCount: 0,
+                    incorrectCount: 0,
+                    lastReviewed: null,
+                    createdAt: new Date().toISOString()
+                };
+                chapter.vocabulary.push(vocab);
+                this.saveData();
+                return vocab;
+            }
+
+            updateVocabularyStats(langId, chapterId, vocabId, correct) {
+                const chapter = this.getLanguageChapter(langId, chapterId);
+                if (!chapter) return;
+
+                const vocab = chapter.vocabulary.find(v => v.id === vocabId);
+                if (!vocab) return;
+
+                if (correct) {
+                    vocab.correctCount++;
+                } else {
+                    vocab.incorrectCount++;
+                }
+                vocab.lastReviewed = new Date().toISOString();
+                this.saveData();
+            }
+
+            deleteVocabulary(langId, chapterId, vocabId) {
+                const chapter = this.getLanguageChapter(langId, chapterId);
+                if (!chapter) return;
+                chapter.vocabulary = chapter.vocabulary.filter(v => v.id !== vocabId);
+                this.saveData();
+            }
+        }
+
+        const db = new DataManager();
+
+        // AI Service - gère toutes les interactions avec l'IA
+        class AIService {
+            constructor() {
+                this.apiKey = db.getUser().apiKey;
+                this.baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models';
+            }
+
+            updateApiKey(key) {
+                this.apiKey = key;
+            }
+
+            async generateContent(prompt, model = 'gemini-1.5-flash') {
+                if (!this.apiKey) {
+                    throw new Error('Clé API non configurée');
+                }
+
+                try {
+                    const response = await fetch(
+                        this.baseUrl + '/' + model + ':generateContent?key=' + this.apiKey,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{
+                                    parts: [{ text: prompt }]
+                                }]
+                            })
+                        }
+                    );
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error ? error.error.message : 'Erreur API');
+                    }
+
+                    const data = await response.json();
+                    return data.candidates[0].content.parts[0].text;
+                } catch (error) {
+                    console.error('AI Error:', error);
+                    throw error;
+                }
+            }
+
+            async analyzeImage(imageBase64, prompt) {
+                if (!this.apiKey) {
+                    throw new Error('Clé API non configurée');
+                }
+
+                try {
+                    const response = await fetch(
+                        this.baseUrl + '/gemini-1.5-flash:generateContent?key=' + this.apiKey,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{
+                                    parts: [
+                                        { text: prompt },
+                                        {
+                                            inline_data: {
+                                                mime_type: 'image/jpeg',
+                                                data: imageBase64
+                                            }
+                                        }
+                                    ]
+                                }]
+                            })
+                        }
+                    );
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error ? error.error.message : 'Erreur analyse image');
+                    }
+
+                    const data = await response.json();
+                    return data.candidates[0].content.parts[0].text;
+                } catch (error) {
+                    console.error('Image Analysis Error:', error);
+                    throw error;
+                }
+            }
+
+            async generateSummary(courseContent) {
+                const prompt = 'Voici un cours. Crée une fiche de révision concise et structurée avec les points clés essentiels. Utilise des titres et sous-titres clairs.\n\nCours:\n' + courseContent;
+                return await this.generateContent(prompt);
+            }
+
+            async generateMindMap(courseContent, section) {
+                const sectionText = section ? ' pour la section "' + section + '"' : '';
+                const prompt = 'Voici un cours. Crée une carte mentale en format texte bien structuré avec des indentations pour montrer la hiérarchie des concepts' + sectionText + '. Utilise des tirets, des espaces et des emojis pour une meilleure lisibilité.\n\nCours:\n' + courseContent;
+                return await this.generateContent(prompt);
+            }
+
+            async translateWord(word, targetLanguage) {
+                const prompt = 'Traduis uniquement le mot "' + word + '" en ' + targetLanguage + '. Réponds UNIQUEMENT par la traduction, sans aucune explication ni ponctuation supplémentaire.';
+                const result = await this.generateContent(prompt);
+                return result.trim();
+            }
+
+            async extractTextFromImage(imageBase64) {
+                const prompt = 'Extrait tout le texte de cette image de cours. Si un mot est illisible ou ambigu, écris [ILLISIBLE] à sa place. Retranscris le texte exactement comme il apparaît, en respectant la structure et la mise en page.';
+                return await this.analyzeImage(imageBase64, prompt);
+            }
+        }
+
+        const ai = new AIService();
+
+        // UI Management
+        let currentView = 'courses';
+        let navigationStack = [];
+
+        function initApp() {
+            const isSetupComplete = db.data.isSetupComplete;
+            
+            if (!isSetupComplete) {
+                document.getElementById('welcomeScreen').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+            } else {
+                document.getElementById('welcomeScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                
+                const user = db.getUser();
+                document.getElementById('headerSubtitle').textContent = 'Bonjour ' + user.name + ' ! 😊';
+                
+                applyTheme(user.theme);
+                ai.updateApiKey(user.apiKey);
+                
+                showView('courses');
+            }
+        }
+
+        function showApiHelp() {
+            showModal('<h2 class="modal-header">🔑 Obtenir votre clé API Gemini</h2><div style="line-height: 1.8; font-size: 15px;"><p style="margin-bottom: 16px;"><strong>C\'est 100% gratuit !</strong> Suivez ces étapes simples :</p><ol style="padding-left: 20px; margin-bottom: 20px;"><li style="margin-bottom: 12px;">Allez sur <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--primary); font-weight: 600;">Google AI Studio</a></li><li style="margin-bottom: 12px;">Connectez-vous avec votre compte Google</li><li style="margin-bottom: 12px;">Cliquez sur "Get API Key" ou "Créer une clé API"</li><li style="margin-bottom: 12px;">Copiez la clé et collez-la dans le champ ci-dessus</li></ol><div style="background: rgba(99, 102, 241, 0.1); padding: 16px; border-radius: 12px; border-left: 4px solid var(--primary);"><strong>💡 Info :</strong> Cette clé permet à l\'IA d\'analyser vos cours et de générer du contenu. Elle reste 100% privée sur votre téléphone.</div></div><button class="btn" onclick="closeModal()">J\'ai compris !</button>');
+        }
+
+        function completeSetup() {
+            const name = document.getElementById('setupName').value.trim();
+            const apiKey = document.getElementById('setupApiKey').value.trim();
+            
+            if (!name) {
+                showToast('Veuillez entrer votre prénom', 'error');
+                return;
+            }
+            
+            if (!apiKey) {
+                showToast('Veuillez entrer votre clé API Gemini', 'error');
+                return;
+            }
+            
+            db.setupUser(name, apiKey);
+            ai.updateApiKey(apiKey);
+            
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            document.getElementById('headerSubtitle').textContent = 'Bonjour ' + name + ' ! 😊';
+            
+            showToast('Configuration terminée ! 🎉', 'success');
+            showView('courses');
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = db.getUser().theme;
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            db.updateTheme(newTheme);
+            applyTheme(newTheme);
+            showToast('Mode ' + (newTheme === 'dark' ? 'sombre' : 'clair') + ' activé', 'success');
+        }
+
+        function showView(view) {
+            currentView = view;
+            navigationStack = [];
+            updateNavButtons();
+            
+            document.getElementById('backBtn').classList.add('hidden');
+            
+            const user = db.getUser();
+            document.getElementById('headerTitle').textContent = 'StudyApp';
+            document.getElementById('headerSubtitle').textContent = 'Bonjour ' + user.name + ' ! 😊';
+            
+            if (view === 'courses') {
+                showCoursesView();
+            } else if (view === 'languages') {
+                showLanguagesView();
+            } else if (view === 'settings') {
+                showSettingsView();
+            }
+        }
+
+        function updateNavButtons() {
+            document.querySelectorAll('.nav-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.dataset.view === currentView) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function pushNavigation(title, subtitle, renderFn) {
+            navigationStack.push({ title: title, subtitle: subtitle, renderFn: renderFn });
+            document.getElementById('headerTitle').textContent = title;
+            document.getElementById('headerSubtitle').textContent = subtitle || '';
+            document.getElementById('backBtn').classList.remove('hidden');
+            renderFn();
+        }
+
+        function goBack() {
+            if (navigationStack.length > 0) {
+                navigationStack.pop();
+                
+                if (navigationStack.length > 0) {
+                    const previous = navigationStack[navigationStack.length - 1];
+                    document.getElementById('headerTitle').textContent = previous.title;
+                    document.getElementById('headerSubtitle').textContent = previous.subtitle || '';
+                    previous.renderFn();
+                } else {
+                    document.getElementById('backBtn').classList.add('hidden');
+                    showView(currentView);
+                }
+            }
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast active toast-' + (type || 'success');
+            
+            setTimeout(function() {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // Courses View
+        function showCoursesView() {
+            const years = db.getYears();
+            
+            let html = '';
+            
+            if (years.length === 0) {
+                html = '<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-text">Aucune année créée<br>Commencez par créer une année scolaire</div></div>';
+            } else {
+                years.forEach(function(year) {
+                    const subjectCount = year.subjects.length;
+                    html += '<div class="card" onclick="showYear(\'' + year.id + '\')"><div class="card-title"><span class="card-icon">📚</span>' + year.name + '</div><div class="card-subtitle">' + subjectCount + ' matière' + (subjectCount > 1 ? 's' : '') + '</div></div>';
+                });
+            }
+            
+            html += '<button class="btn" onclick="showAddYearModal()">➕ Nouvelle Année</button>';
+            
+            document.getElementById('mainContainer').innerHTML = html;
+        }
+
+        function showYear(yearId) {
+            const year = db.getYear(yearId);
+            if (!year) return;
+            
+            pushNavigation(year.name, year.subjects.length + ' matière(s)', function() {
+                let html = '';
+                
+                if (year.subjects.length === 0) {
+                    html = '<div class="empty-state"><div class="empty-icon">📖</div><div class="empty-text">Aucune matière créée</div></div>';
+                } else {
+                    year.subjects.forEach(function(subject) {
+                        const chapterCount = subject.chapters.length;
+                        html += '<div class="card" onclick="showSubject(\'' + yearId + '\', \'' + subject.id + '\')"><div class="card-title"><span class="card-icon">📖</span>' + subject.name + '</div><div class="card-subtitle">' + chapterCount + ' chapitre' + (chapterCount > 1 ? 's' : '') + '</div></div>';
+                    });
+                }
+                
+                html += '<button class="btn" onclick="showAddSubjectModal(\'' + yearId + '\')">➕ Nouvelle Matière</button>';
+                html += '<button class="btn btn-danger" onclick="confirmDeleteYear(\'' + yearId + '\')">🗑️ Supprimer l\'année</button>';
+                
+                document.getElementById('mainContainer').innerHTML = html;
+            });
+        }
+
+        function showSubject(yearId, subjectId) {
+            const year = db.getYear(yearId);
+            const subject = db.getSubject(yearId, subjectId);
+            if (!year || !subject) return;
+            
+            pushNavigation(subject.name, subject.chapters.length + ' chapitre(s)', function() {
+                let html = '';
+                
+                if (subject.chapters.length === 0) {
+                    html = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">Aucun chapitre créé</div></div>';
+                } else {
+                    subject.chapters.forEach(function(chapter) {
+                        const hasCourse = chapter.course !== null;
+                        const hasSummary = chapter.summary !== null;
+                        const hasMindmap = chapter.mindmap !== null;
+                        const quizCount = chapter.quizzes.length;
+                        
+                        html += '<div class="card" onclick="showChapter(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapter.id + '\')"><div class="card-title"><span class="card-icon">📝</span>' + chapter.name + '</div><div class="card-subtitle">' + (hasCourse ? '✅ Cours' : '⚫ Cours') + (hasSummary ? ' • ✅ Résumé' : '') + (hasMindmap ? ' • ✅ Carte' : '') + (quizCount > 0 ? ' • ' + quizCount + ' quiz' : '') + '</div></div>';
+                    });
+                }
+                
+                html += '<button class="btn" onclick="showAddChapterModal(\'' + yearId + '\', \'' + subjectId + '\')">➕ Nouveau Chapitre</button>';
+                html += '<button class="btn btn-danger" onclick="confirmDeleteSubject(\'' + yearId + '\', \'' + subjectId + '\')">🗑️ Supprimer la matière</button>';
+                
+                document.getElementById('mainContainer').innerHTML = html;
+            });
+        }
+
+        function showChapter(yearId, subjectId, chapterId) {
+            const subject = db.getSubject(yearId, subjectId);
+            const chapter = db.getChapter(yearId, subjectId, chapterId);
+            if (!subject || !chapter) return;
+            
+            pushNavigation(chapter.name, subject.name, function() {
+                const hasCourse = chapter.course !== null;
+                
+                let html = '<div class="action-buttons"><button class="btn" onclick="showAddCourseModal(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapterId + '\')">' + (hasCourse ? '✏️ Modifier' : '📄 Déposer') + ' mon cours</button>';
+                
+                if (hasCourse) {
+                    html += '<button class="btn btn-secondary" onclick="showCourseContent(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapterId + '\')">👁️ Voir le cours</button>';
+                }
+                
+                html += '</div>';
+                
+                if (hasCourse) {
+                    html += '<div class="section-title">✨ Générer du contenu</div><div class="action-buttons"><button class="btn btn-secondary" onclick="generateSummary(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapterId + '\')">📄 ' + (chapter.summary ? 'Reformuler' : 'Créer') + ' Résumé</button><button class="btn btn-secondary" onclick="generateMindmap(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapterId + '\')">🗺️ Carte Mentale</button></div>';
+                    
+                    if (chapter.summary) {
+                        html += '<div class="section-title">📄 Résumé</div><div class="content-display">' + chapter.summary + '</div>';
+                    }
+                    
+                    if (chapter.mindmap) {
+                        html += '<div class="section-title">🗺️ Carte Mentale</div><div class="content-display">' + chapter.mindmap + '</div>';
+                    }
+                }
+                
+                html += '<button class="btn btn-danger" style="margin-top: 32px;" onclick="confirmDeleteChapter(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapterId + '\')">🗑️ Supprimer le chapitre</button>';
+                
+                document.getElementById('mainContainer').innerHTML = html;
+            });
+        }
+
+        function showCourseContent(yearId, subjectId, chapterId) {
+            const chapter = db.getChapter(yearId, subjectId, chapterId);
+            if (!chapter || !chapter.course) return;
+            
+            pushNavigation('Mon cours', chapter.name, function() {
+                const html = '<div class="content-display">' + chapter.course + '</div>';
+                document.getElementById('mainContainer').innerHTML = html;
+            });
+        }
+
+        // Languages View
+        function showLanguagesView() {
+            const languages = db.getLanguages();
+            
+            let html = '';
+            
+            if (languages.length === 0) {
+                html = '<div class="empty-state"><div class="empty-icon">🌍</div><div class="empty-text">Aucune langue ajoutée<br>Commencez par ajouter une langue</div></div>';
+            } else {
+                languages.forEach(function(lang) {
+                    const chapterCount = lang.chapters.length;
+                    let totalWords = 0;
+                    lang.chapters.forEach(function(ch) { totalWords += ch.vocabulary.length; });
+                    
+                    html += '<div class="card" onclick="showLanguage(\'' + lang.id + '\')"><div class="card-title"><span class="card-icon">🌍</span>' + lang.name + '</div><div class="card-subtitle">' + chapterCount + ' chapitre(s) • ' + totalWords + ' mot(s)</div></div>';
+                });
+            }
+            
+            html += '<button class="btn" onclick="showAddLanguageModal()">➕ Nouvelle Langue</button>';
+            
+            document.getElementById('mainContainer').innerHTML = html;
+        }
+
+        function showLanguage(langId) {
+            const language = db.getLanguage(langId);
+            if (!language) return;
+            
+            pushNavigation(language.name, language.chapters.length + ' chapitre(s)', function() {
+                let html = '';
+                
+                if (language.chapters.length === 0) {
+                    html = '<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-text">Aucun chapitre créé</div></div>';
+                } else {
+                    language.chapters.forEach(function(chapter) {
+                        const wordCount = chapter.vocabulary.length;
+                        html += '<div class="card" onclick="showLanguageChapter(\'' + langId + '\', \'' + chapter.id + '\')"><div class="card-title"><span class="card-icon">📚</span>' + chapter.name + '</div><div class="card-subtitle">' + wordCount + ' mot' + (wordCount > 1 ? 's' : '') + '</div></div>';
+                    });
+                }
+                
+                html += '<button class="btn" onclick="showAddLanguageChapterModal(\'' + langId + '\')">➕ Nouveau Chapitre</button>';
+                html += '<button class="btn btn-danger" onclick="confirmDeleteLanguage(\'' + langId + '\')">🗑️ Supprimer la langue</button>';
+                
+                document.getElementById('mainContainer').innerHTML = html;
+            });
+        }
+
+        function showLanguageChapter(langId, chapterId) {
+            const language = db.getLanguage(langId);
+            const chapter = db.getLanguageChapter(langId, chapterId);
+            if (!language || !chapter) return;
+            
+            pushNavigation(chapter.name, language.name, function() {
+                const vocabulary = chapter.vocabulary;
+                
+                let html = '';
+                
+                html += '<div class="section-title">📝 Liste de Vocabulaire</div>';
+                
+                if (vocabulary.length === 0) {
+                    html += '<div class="empty-state" style="padding: 40px 20px;"><div class="empty-icon" style="font-size: 60px;">📖</div><div class="empty-text">Aucun mot ajouté</div></div>';
+                } else {
+                    vocabulary.forEach(function(vocab) {
+                        const total = vocab.correctCount + vocab.incorrectCount;
+                        const accuracy = total > 0 ? Math.round((vocab.correctCount / total) * 100) : 0;
+                        
+                        html += '<div class="list-item"><div class="list-item-content"><div class="list-item-title">' + vocab.french + ' → ' + vocab.translated + '</div><div class="list-item-subtitle">Réussite: ' + accuracy + '% (' + vocab.correctCount + '/' + total + ')</div></div><div class="list-item-actions"><button class="icon-btn" onclick="confirmDeleteVocab(\'' + langId + '\', \'' + chapterId + '\', \'' + vocab.id + '\')">🗑️</button></div></div>';
+                    });
+                }
+                
+                html += '<button class="btn" onclick="showAddVocabModal(\'' + langId + '\', \'' + chapterId + '\', \'' + language.name + '\')">➕ Ajouter un Mot</button>';
+                html += '<button class="btn btn-secondary" onclick="showBulkVocabModal(\'' + langId + '\', \'' + chapterId + '\', \'' + language.name + '\')">📝 Import en Masse</button>';
+                html += '<button class="btn btn-danger" style="margin-top: 24px;" onclick="confirmDeleteLanguageChapter(\'' + langId + '\', \'' + chapterId + '\')">🗑️ Supprimer le chapitre</button>';
+                
+                document.getElementById('mainContainer').innerHTML = html;
+            });
+        }
+
+        // Settings View
+        function showSettingsView() {
+            const user = db.getUser();
+            const theme = user.theme;
+            
+            const html = '<div class="card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white;"><div class="card-title">👤 Profil</div><div class="card-subtitle" style="margin-top: 12px;">Prénom: ' + user.name + '</div></div><div class="card"><div class="card-title">🎨 Apparence</div><div style="margin-top: 16px;"><button class="btn btn-outline" onclick="toggleTheme()">' + (theme === 'light' ? '🌙' : '☀️') + ' Mode ' + (theme === 'light' ? 'sombre' : 'clair') + '</button></div></div><div class="card"><div class="card-title">🔑 API Gemini</div><div class="card-subtitle" style="margin-top: 12px; font-family: monospace; word-break: break-all;">' + user.apiKey.substring(0, 20) + '...</div><div style="margin-top: 16px;"><button class="btn btn-outline" style="width: auto; display: inline-block; padding: 10px 20px; font-size: 14px;" onclick="showUpdateApiKeyModal()">Modifier la clé</button></div></div><div class="card"><div class="card-title">ℹ️ À propos</div><div class="card-subtitle" style="margin-top: 12px; line-height: 1.8;"><strong>StudyApp v1.0</strong><br><br>Votre assistant d\'apprentissage personnel propulsé par l\'IA Gemini de Google.<br><br><strong>Fonctionnalités:</strong><br>• Scan de cours avec OCR<br>• Résumés et cartes mentales IA<br>• Apprentissage de vocabulaire<br>• 100% privé et local</div></div><div class="card"><div class="card-title">📊 Statistiques</div><div class="card-subtitle" style="margin-top: 12px;">Années: ' + db.getYears().length + '<br>Langues: ' + db.getLanguages().length + '</div></div><button class="btn btn-danger" onclick="confirmResetAll()">🗑️ Réinitialiser toutes les données</button>';
+            
+            document.getElementById('mainContainer').innerHTML = html;
+        }
+
+        function showUpdateApiKeyModal() {
+            showModal('<h2 class="modal-header">🔑 Modifier la clé API</h2><div class="form-group"><label class="form-label">Nouvelle clé API Gemini</label><input type="text" class="form-input" id="newApiKey" placeholder="Votre nouvelle clé"></div><button class="btn" onclick="updateApiKey()">Enregistrer</button>');
+        }
+
+        function updateApiKey() {
+            const newKey = document.getElementById('newApiKey').value.trim();
+            if (!newKey) {
+                showToast('Veuillez entrer une clé API', 'error');
+                return;
+            }
+            
+            const user = db.getUser();
+            db.setupUser(user.name, newKey);
+            ai.updateApiKey(newKey);
+            
+            closeModal();
+            showToast('Clé API mise à jour !', 'success');
+            showSettingsView();
+        }
+
+        function confirmResetAll() {
+            if (confirm('⚠️ ATTENTION : Cette action est IRRÉVERSIBLE.\n\nToutes vos données (cours, quiz, vocabulaire) seront supprimées définitivement.\n\nVoulez-vous vraiment continuer ?')) {
+                localStorage.removeItem('studyAppData');
+                location.reload();
+            }
+        }
+
+        // Modals
+        function showModal(content) {
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function showAddYearModal() {
+            showModal('<h2 class="modal-header">📚 Nouvelle Année</h2><div class="form-group"><label class="form-label">Nom de l\'année</label><input type="text" class="form-input" id="yearName" placeholder="Ex: Seconde, Première, Terminale..."></div><button class="btn" onclick="addYear()">Créer</button>');
+            setTimeout(function() { 
+                const input = document.getElementById('yearName');
+                if (input) input.focus(); 
+            }, 100);
+        }
+
+        function addYear() {
+            const name = document.getElementById('yearName').value.trim();
+            if (!name) {
+                showToast('Veuillez entrer un nom', 'error');
+                return;
+            }
+            
+            db.addYear(name);
+            closeModal();
+            showToast('Année créée !', 'success');
+            showCoursesView();
+        }
+
+        function confirmDeleteYear(yearId) {
+            if (confirm('⚠️ Supprimer cette année et toutes ses matières ?\n\nCette action est irréversible.')) {
+                db.deleteYear(yearId);
+                showToast('Année supprimée', 'success');
+                showCoursesView();
+            }
+        }
+
+        function showAddSubjectModal(yearId) {
+            showModal('<h2 class="modal-header">📖 Nouvelle Matière</h2><div class="form-group"><label class="form-label">Nom de la matière</label><input type="text" class="form-input" id="subjectName" placeholder="Ex: Mathématiques, Physique, Histoire..."></div><button class="btn" onclick="addSubject(\'' + yearId + '\')">Créer</button>');
+            setTimeout(function() { 
+                const input = document.getElementById('subjectName');
+                if (input) input.focus(); 
+            }, 100);
+        }
+
+        function addSubject(yearId) {
+            const name = document.getElementById('subjectName').value.trim();
+            if (!name) {
+                showToast('Veuillez entrer un nom', 'error');
+                return;
+            }
+            
+            db.addSubject(yearId, name);
+            closeModal();
+            showToast('Matière créée !', 'success');
+            showYear(yearId);
+        }
+
+        function confirmDeleteSubject(yearId, subjectId) {
+            if (confirm('⚠️ Supprimer cette matière et tous ses chapitres ?\n\nCette action est irréversible.')) {
+                db.deleteSubject(yearId, subjectId);
+                showToast('Matière supprimée', 'success');
+                goBack();
+            }
+        }
+
+        function showAddChapterModal(yearId, subjectId) {
+            showModal('<h2 class="modal-header">📝 Nouveau Chapitre</h2><div class="form-group"><label class="form-label">Nom du chapitre</label><input type="text" class="form-input" id="chapterName" placeholder="Ex: Chapitre 1 - Les inéquations"></div><button class="btn" onclick="addChapter(\'' + yearId + '\', \'' + subjectId + '\')">Créer</button>');
+            setTimeout(function() { 
+                const input = document.getElementById('chapterName');
+                if (input) input.focus(); 
+            }, 100);
+        }
+
+        function addChapter(yearId, subjectId) {
+            const name = document.getElementById('chapterName').value.trim();
+            if (!name) {
+                showToast('Veuillez entrer un nom', 'error');
+                return;
+            }
+            
+            db.addChapter(yearId, subjectId, name);
+            closeModal();
+            showToast('Chapitre créé !', 'success');
+            showSubject(yearId, subjectId);
+        }
+
+        function confirmDeleteChapter(yearId, subjectId, chapterId) {
+            if (confirm('⚠️ Supprimer ce chapitre et tout son contenu ?\n\nCette action est irréversible.')) {
+                db.deleteChapter(yearId, subjectId, chapterId);
+                showToast('Chapitre supprimé', 'success');
+                goBack();
+            }
+        }
+
+        function showAddCourseModal(yearId, subjectId, chapterId) {
+            showModal('<h2 class="modal-header">📄 Déposer mon cours</h2><div class="form-group"><label class="form-label">Option 1: Scanner mon cours</label><div class="file-upload" onclick="document.getElementById(\'courseImage\').click()"><div class="file-upload-icon">📸</div><div>Prendre une photo ou importer</div><input type="file" id="courseImage" class="file-input" accept="image/*" onchange="handleCourseImage(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapterId + '\')"></div></div><div style="text-align: center; margin: 20px 0; color: var(--text-light);">OU</div><div class="form-group"><label class="form-label">Option 2: Écrire/Coller mon cours</label><textarea class="form-textarea" id="courseText" placeholder="Collez ou tapez votre cours ici..."></textarea></div><button class="btn" onclick="saveCourse(\'' + yearId + '\', \'' + subjectId + '\', \'' + chapterId + '\')">Enregistrer</button>');
+        }
+
+        function handleCourseImage(yearId, subjectId, chapterId) {
+            const file = document.getElementById('courseImage').files[0];
+            if (!file) return;
+            
+            showLoading(true, 'Analyse de l\'image en cours...');
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const base64 = e.target.result.split(',')[1];
+                    const extractedText = await ai.extractTextFromImage(base64);
+                    
+                    if (extractedText.indexOf('[ILLISIBLE]') !== -1) {
+                        const clarification = prompt('Certains mots ne sont pas lisibles dans votre image.\n\nTexte extrait:\n' + extractedText + '\n\nVeuillez corriger les parties [ILLISIBLE]:');
+                        if (clarification) {
+                            db.setCourse(yearId, subjectId, chapterId, clarification);
+                        } else {
+                            db.setCourse(yearId, subjectId, chapterId, extractedText);
+                        }
+                    } else {
+                        db.setCourse(yearId, subjectId, chapterId, extractedText);
+                    }
+                    
+                    showLoading(false);
+                    closeModal();
+                    showToast('Cours scanné et enregistré !', 'success');
+                    showChapter(yearId, subjectId, chapterId);
+                } catch (error) {
+                    showLoading(false);
+                    showToast('Erreur lors du scan: ' + error.message, 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveCourse(yearId, subjectId, chapterId) {
+            const text = document.getElementById('courseText').value.trim();
+            if (!text) {
+                showToast('Veuillez entrer du contenu', 'error');
+                return;
+            }
+            
+            db.setCourse(yearId, subjectId, chapterId, text);
+            closeModal();
+            showToast('Cours enregistré !', 'success');
+            showChapter(yearId, subjectId, chapterId);
+        }
+
+        function showAddLanguageModal() {
+            showModal('<h2 class="modal-header">🌍 Nouvelle Langue</h2><div class="form-group"><label class="form-label">Nom de la langue</label><input type="text" class="form-input" id="languageName" placeholder="Ex: Allemand, Anglais, Espagnol..."></div><button class="btn" onclick="addLanguage()">Créer</button>');
+            setTimeout(function() { 
+                const input = document.getElementById('languageName');
+                if (input) input.focus(); 
+            }, 100);
+        }
+
+        function addLanguage() {
+            const name = document.getElementById('languageName').value.trim();
+            if (!name) {
+                showToast('Veuillez entrer un nom', 'error');
+                return;
+            }
+            
+            db.addLanguage(name);
+            closeModal();
+            showToast('Langue créée !', 'success');
+            showLanguagesView();
+        }
+
+        function confirmDeleteLanguage(langId) {
+            if (confirm('⚠️ Supprimer cette langue et tout son contenu ?\n\nCette action est irréversible.')) {
+                db.deleteLanguage(langId);
+                showToast('Langue supprimée', 'success');
+                showLanguagesView();
+            }
+        }
+
+        function showAddLanguageChapterModal(langId) {
+            showModal('<h2 class="modal-header">📚 Nouveau Chapitre</h2><div class="form-group"><label class="form-label">Nom du chapitre</label><input type="text" class="form-input" id="langChapterName" placeholder="Ex: Vocabulaire de base, Les verbes..."></div><button class="btn" onclick="addLanguageChapter(\'' + langId + '\')">Créer</button>');
+            setTimeout(function() { 
+                const input = document.getElementById('langChapterName');
+                if (input) input.focus(); 
+            }, 100);
+        }
+
+        function addLanguageChapter(langId) {
+            const name = document.getElementById('langChapterName').value.trim();
+            if (!name) {
+                showToast('Veuillez entrer un nom', 'error');
+                return;
+            }
+            
+            db.addLanguageChapter(langId, name);
+            closeModal();
+            showToast('Chapitre créé !', 'success');
+            showLanguage(langId);
+        }
+
+        function confirmDeleteLanguageChapter(langId, chapterId) {
+            if (confirm('⚠️ Supprimer ce chapitre et tout son vocabulaire ?\n\nCette action est irréversible.')) {
+                db.deleteLanguageChapter(langId, chapterId);
+                showToast('Chapitre supprimé', 'success');
+                goBack();
+            }
+        }
+
+        function showAddVocabModal(langId, chapterId, langName) {
+            showModal('<h2 class="modal-header">➕ Ajouter un Mot</h2><div class="form-group"><label class="form-label">Mot en français</label><input type="text" class="form-input" id="vocabFrench" placeholder="Ex: Bonjour"></div><div class="form-group"><label class="form-label">Traduction en ' + langName + '</label><input type="text" class="form-input" id="vocabTranslated" placeholder="Laissez vide pour traduction auto"></div><button class="btn" onclick="addVocab(\'' + langId + '\', \'' + chapterId + '\', \'' + langName + '\')">Ajouter</button>');
+            setTimeout(function() { 
+                const input = document.getElementById('vocabFrench');
+                if (input) input.focus(); 
+            }, 100);
+        }
+
+        async function addVocab(langId, chapterId, langName) {
+            const french = document.getElementById('vocabFrench').value.trim();
+            let translated = document.getElementById('vocabTranslated').value.trim();
+            
+            if (!french) {
+                showToast('Veuillez entrer un mot en français', 'error');
+                return;
+            }
+            
+            if (!translated) {
+                showLoading(true, 'Traduction en cours...');
+                try {
+                    translated = await ai.translateWord(french, langName);
+                    showLoading(false);
+                } catch (error) {
+                    showLoading(false);
+                    showToast('Erreur de traduction: ' + error.message, 'error');
+                    return;
+                }
+            }
+            
+            db.addVocabulary(langId, chapterId, french, translated);
+            closeModal();
+            showToast('Mot ajouté !', 'success');
+            showLanguageChapter(langId, chapterId);
+        }
+
+        function showBulkVocabModal(langId, chapterId, langName) {
+            showModal('<h2 class="modal-header">📝 Import en Masse</h2><div class="form-group"><label class="form-label">Liste de mots</label><textarea class="form-textarea" id="bulkVocab" placeholder="Format: français = traduction (un par ligne)\n\nExemple:\nbonjour = hello\nmerci = thank you\nau revoir = goodbye\n\nSi vous omettez la traduction, l\'IA la trouvera automatiquement."></textarea></div><button class="btn" onclick="importBulkVocab(\'' + langId + '\', \'' + chapterId + '\', \'' + langName + '\')">Importer</button>');
+        }
+
+        async function importBulkVocab(langId, chapterId, langName) {
+            const text = document.getElementById('bulkVocab').value.trim();
+            if (!text) {
+                showToast('Veuillez entrer du vocabulaire', 'error');
+                return;
+            }
+            
+            const lines = text.split('\n').filter(function(l) { return l.trim(); });
+            let count = 0;
+            
+            showLoading(true, 'Import en cours... 0/' + lines.length);
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const parts = line.split('=').map(function(p) { return p.trim(); });
+                
+                if (parts.length >= 1 && parts[0]) {
+                    let french = parts[0];
+                    let translated = parts[1] || '';
+                    
+                    if (!translated) {
+                        try {
+                            translated = await ai.translateWord(french, langName);
+                        } catch (error) {
+                            console.error('Translation error:', error);
+                            continue;
+                        }
+                    }
+                    
+                    db.addVocabulary(langId, chapterId, french, translated);
+                    count++;
+                    
+                    const loadingEl = document.querySelector('.loading p');
+                    if (loadingEl) {
+                        loadingEl.textContent = 'Import en cours... ' + count + '/' + lines.length;
+                    }
+                }
+            }
+            
+            showLoading(false);
+            closeModal();
+            showToast(count + ' mot(s) importé(s) !', 'success');
+            showLanguageChapter(langId, chapterId);
+        }
+
+        function confirmDeleteVocab(langId, chapterId, vocabId) {
+            if (confirm('Supprimer ce mot ?')) {
+                db.deleteVocabulary(langId, chapterId, vocabId);
+                showToast('Mot supprimé', 'success');
+                showLanguageChapter(langId, chapterId);
+            }
+        }
+
+        // AI Generation
+        async function generateSummary(yearId, subjectId, chapterId) {
+            const chapter = db.getChapter(yearId, subjectId, chapterId);
+            if (!chapter || !chapter.course) return;
+            
+            showLoading(true, 'Génération du résumé...');
+            
+            try {
+                const summary = await ai.generateSummary(chapter.course);
+                db.setSummary(yearId, subjectId, chapterId, summary);
+                
+                showLoading(false);
+                showToast('Résumé généré !', 'success');
+                showChapter(yearId, subjectId, chapterId);
+            } catch (error) {
+                showLoading(false);
+                showToast('Erreur: ' + error.message, 'error');
+            }
+        }
+
+        async function generateMindmap(yearId, subjectId, chapterId) {
+            const chapter = db.getChapter(yearId, subjectId, chapterId);
+            if (!chapter || !chapter.course) return;
+            
+            showLoading(true, 'Génération de la carte mentale...');
+            
+            try {
+                const mindmap = await ai.generateMindMap(chapter.course, null);
+                db.setMindmap(yearId, subjectId, chapterId, mindmap);
+                
+                showLoading(false);
+                showToast('Carte mentale générée !', 'success');
+                showChapter(yearId, subjectId, chapterId);
+            } catch (error) {
+                showLoading(false);
+                showToast('Erreur: ' + error.message, 'error');
+            }
+        }
+
+        function showLoading(show, message) {
+            if (show) {
+                document.getElementById('mainContainer').innerHTML = '<div class="loading active"><div class="spinner"></div><p>' + (message || 'Chargement...') + '</p></div>';
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
